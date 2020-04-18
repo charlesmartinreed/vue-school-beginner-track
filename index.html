@@ -21,7 +21,10 @@
           <p>{{ description }}</p>
           <!-- conditional statements use the v-if, v-else-if, or v-else directive -->
 
-          <button v-on:click="addToCart">Add to Cart</button>
+          <button v-on:click="addToCart" 
+          :disabled="!inStock" 
+          :class="{ disabledButton: !inStock}"
+          >Add to Cart</button>
           <button @click="removeFromCart">Remove From Cart</button>
           <div class="cart"><p>Cart [{{cart}}]</p></div>
 
@@ -30,7 +33,7 @@
           <p v-else-if="inventory <= 10 && inventory > 0">
             Low Stock - Order Soon!
           </p>
-          <p v-else>Out of Stock</p>
+          <p v-else :class="{ outOfStock: !inStock }">Out of Stock</p>
           <p class="on-sale" v-show="onSale">Now On Sale!</p>
           <a :href="link">More Info</a>
 
@@ -45,11 +48,15 @@
             {{ size }}
           </div>
 
-          <div v-for="variant in variants" :key="variant.variantId">
-            <p @mouseover="updateProduct(variant.variantImage)">
-              {{ variant.variantColor }}
-            </p>
-          </div>
+          <!-- in the style directive, either camelCasing or kebob casing is valid, as long as the kebob case is in '' -->
+          <!-- we can also bind to style objects or pass an array of style objects - :style="[]styleObject, styleObject2" -->
+          <div
+            v-for="variant in variants"
+            :key="variant.variantId"
+            class="color-box"
+            :style="{ backgroundColor: variant.variantColor}"
+            @mouseover="updateProduct(variant.variantImage)"
+          ></div>
         </div>
       </div>
     </div>

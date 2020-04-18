@@ -19,7 +19,7 @@ body {
 
 .product-sizes {
   display: inline;
-  background-color: #1270ce;
+  background-color: #212222;
   cursor: pointer;
   color: whitesmoke;
   padding: 0.2rem 0.5rem;
@@ -47,7 +47,12 @@ img {
 .color-box {
   width: 40px;
   height: 40px;
+  border-radius: 50%;
   margin-top: 5px;
+  display: inline-block;
+  margin-top: 1rem;
+  margin-right: 0.4rem;
+  cursor: pointer;
 }
 
 .cart {
@@ -105,4 +110,8 @@ textarea {
   font-size: 1.4rem;
   letter-spacing: 0.03rem;
   text-transform: uppercase;
+}
+
+.outOfStock {
+  text-decoration: line-through;
 }

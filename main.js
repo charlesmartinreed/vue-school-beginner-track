@@ -10,8 +10,9 @@ var app = new Vue({
     description:
       "So luxurious, so fashionable. Go ahead and buy them - it's OK to be extra.",
     link: "https://hotsocks.biz",
-    inventory: 29,
+    inventory: 5,
     onSale: false,
+    inStock: true,
     details: [
       "80% cotton",
       "20% polyester",
