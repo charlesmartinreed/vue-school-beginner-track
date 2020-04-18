@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basic Vue E-commerce Example</title>
-   
-
-    
-</head>
-<body>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="nav-bar"></div>
     <div id="app">
-        <!-- value in {{ }} expression pulled from data exposed by vue instance -->
-        <h1>Impossibly Dope {{ product }}</h1>
-        <p>{{ description }}</p>
+      <div class="product">
+        <div class="product-image">
+          <!-- v-bind creates a bond between data and attribute - it dynamically binds an object to an expression -->
+          <!-- v-bind:src is equivalent to shorthand, :src -->
+          <img v-bind:src="image" alt="" />
+        </div>
+        <div class="product-info">
+          <!-- value in {{ }} expression pulled from data exposed by vue instance -->
+          <h1>Impossibly Dope {{ title }}</h1>
+          <p>{{ description }}</p>
+          <a :href="link">More Info</a>
+        </div>
+      </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="./main.js"></script>
-</body>
+  </body>
 </html>
