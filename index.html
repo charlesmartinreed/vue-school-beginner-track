@@ -21,6 +21,10 @@
           <p>{{ description }}</p>
           <!-- conditional statements use the v-if, v-else-if, or v-else directive -->
 
+          <button v-on:click="addToCart">Add to Cart</button>
+          <button @click="removeFromCart">Remove From Cart</button>
+          <div class="cart"><p>Cart [{{cart}}]</p></div>
+
           <!-- alternatively, we can use v-show to display elements programmatically; display:none for the element when not set to render with v-show directive -->
           <p v-if="inventory > 10">In Stock!</p>
           <p v-else-if="inventory <= 10 && inventory > 0">
@@ -37,12 +41,12 @@
             </li>
           </ul>
 
-          <div class="product-sizes" v-for="size in sizes" key="">
+          <div class="product-sizes" v-for="size in sizes" key="size">
             {{ size }}
           </div>
 
           <div v-for="variant in variants" :key="variant.variantId">
-            <p>
+            <p @mouseover="updateProduct(variant.variantImage)">
               {{ variant.variantColor }}
             </p>
           </div>
