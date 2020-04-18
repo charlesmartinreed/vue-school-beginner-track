@@ -19,6 +19,14 @@
           <!-- value in {{ }} expression pulled from data exposed by vue instance -->
           <h1>Impossibly Dope {{ title }}</h1>
           <p>{{ description }}</p>
+          <!-- conditional statements use the v-if, v-else-if, or v-else directive -->
+          <!-- alternatively, we can use v-show to display elements programmatically -->
+          <p v-if="inventory > 10">In Stock!</p>
+          <p v-else-if="inventory <= 10 && inventory > 0">
+            Low Stock - Order Soon!
+          </p>
+          <p v-else>Out of Stock</p>
+          <p class="on-sale" v-show="onSale">Now On Sale!</p>
           <a :href="link">More Info</a>
         </div>
       </div>

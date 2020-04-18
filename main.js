@@ -11,5 +11,7 @@ var app = new Vue({
       "So luxurious, so fashionable. Go ahead and buy them - it's OK to be extra.",
     image: "./assets/images/vmSocks-green-onWhite.jpg",
     link: "https://hotsocks.biz",
+    inventory: 29,
+    onSale: true,
   },
 });
