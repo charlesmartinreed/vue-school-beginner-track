@@ -12,6 +12,30 @@ var app = new Vue({
     image: "./assets/images/vmSocks-green-onWhite.jpg",
     link: "https://hotsocks.biz",
     inventory: 29,
-    onSale: true,
+    onSale: false,
+    details: [
+      "80% cotton",
+      "20% polyester",
+      "Fun for all ages",
+      "Gender neutral",
+    ],
+    variants: [
+      {
+        variantId: 2234,
+        variantColor: "green",
+      },
+      {
+        variantId: 2235,
+        variantColor: "blue",
+      },
+    ],
+    sizes: [
+      "extra small",
+      "small",
+      "medium",
+      "large",
+      "extra large",
+      "extra extra large",
+    ],
   },
 });
