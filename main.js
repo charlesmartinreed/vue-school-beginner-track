@@ -65,6 +65,7 @@ Vue.component('product', {
         <p>{{ review.name }}</p>
         <p>{{ review.rating }}</p>
         <p>{{ review.review }}</p>
+        <p>Recommended?: {{ review.recommend }}</p>
         </li>
        </ul>
     </div>
@@ -193,7 +194,33 @@ Vue.component('product-review', {
 
   <p>
   <label for="review">Review:</label>
+  </p>
+
   <textarea id="review" v-model="review"></textarea>
+
+  <p>Would you recommend this product?</p>
+    <label for="recommend_yes">Yes
+    <input 
+    type="radio" 
+    name="recommend" 
+    id="recommend_yes" 
+    value="Yes" 
+    v-model="recommend"
+    />
+    </label>
+    
+    <label for="recommend_no">No
+    <input 
+    type="radio" 
+    name="recommend" 
+    id="recommend_no" 
+    value="No" 
+    v-model="recommend"
+    />
+    </label>
+    
+
+  </input>
 
   <p>
     <label for="rating">Rating:</label>
@@ -217,29 +244,33 @@ Vue.component('product-review', {
       name: null,
       review: null,
       rating: null,
+      recommend: null,
       errors: []
     }
   },
   methods: {
     onSubmit() {
-      let { name, review, rating } = this;
+      let { name, review, rating, recommend } = this;
 
-      if (name && review && rating) {
+      if (name && review && rating && recommend) {
         let productReview = {
-          name, review, rating
+          name, review, rating, recommend
         }
   
         this.$emit('review-submitted', productReview)
+        console.log(productReview)
   
         // reset the values after submitting
         this.name = null
         this.review = null
         this.rating = null
+        this.recommend = null
       } else {
         // add a new error to errors
         if (!this.name) this.errors.push('Name required')
         if (!this.review) this.errors.push('Review required')
         if (!this.rating) this.errors.push('Rating required')
+        if (!this.recommend) this.errors.push('Recommendation required')
 
         setTimeout(() => {
           this.errors = []
