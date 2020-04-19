@@ -53,6 +53,8 @@ Vue.component('product', {
       @mouseover="updateProduct(index)"
     ></div>
   </div>
+
+  <product-review @review-submitted="addReview"></product-review>
 </div>
   `,
   data() {
@@ -95,6 +97,7 @@ Vue.component('product', {
         "extra large",
         "extra extra large",
       ],
+      reviews: [],
       }
     },
     methods: {
@@ -113,6 +116,10 @@ Vue.component('product', {
     updateProduct(index) {
       this.selectedVariant = index;
     },
+    addReview(productReview) {
+      this.reviews.push(productReview)
+
+    }
   },
   // results of a computed property are CACHED, which is what makes this more efficient than using a method when the operation in the computed property is expensive
   computed: {
@@ -150,6 +157,61 @@ Vue.component('product-details', {
   `,
 })
 
+// v-model is used for BIDIRECTIONAL DATA BINDING
+Vue.component('product-review', {
+  template: `
+  <form class="review-form" @submit.prevent="onSubmit">
+  <p>
+    <label for="name">Name:</label>
+    <input id="name" v-model="name" placeholder="Your name">
+  </p>
+
+  <p>
+  <label for="review">Review:</label>
+  <textarea id="review" v-model="review"></textarea>
+
+  <p>
+    <label for="rating">Rating:</label>
+    <select id="rating" v-model.number="rating">
+      <option>5</option>
+      <option>4</option>
+      <option>3</option>
+      <option>2</option>
+      <option>1</option>
+    </select>
+  </p>
+
+  <p>
+    <input type="submit" value="Submit">
+  </p>
+</p>
+</form>
+  `,
+  data() {
+    return {
+      name: null,
+      review: null,
+      rating: null
+    }
+  },
+  methods: {
+    onSubmit() {
+      let { name, review, rating } = this;
+      
+      let productReview = {
+        name, review, rating
+      }
+
+      this.$emit('review-submitted', productReview)
+
+      // reset the values after submitting
+      this.name = null
+      this.review = null
+      this.rating = null
+    }
+  }
+})
+
 // create a new Vue instance
 var app = new Vue({
   // initialization options go here
@@ -174,6 +236,6 @@ var app = new Vue({
         default:
           break;
       }
-    }
+    },
   }
 });
