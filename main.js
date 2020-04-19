@@ -28,8 +28,7 @@ Vue.component('product', {
     :class="{ disabledButton: !inStock}"
     >Add to Cart</button>
     <button @click="removeFromCart">Remove From Cart</button>
-    <div class="cart"><p>Cart [{{cart}}]</p></div>
-
+      
     <!-- alternatively, we can use v-show to display elements programmatically; display:none for the element when not set to render with v-show directive -->
     <p v-if="inStock">In Stock!</p>
     <p v-else :class="{ outOfStock: !inStock }">Out of Stock</p>
@@ -71,7 +70,6 @@ Vue.component('product', {
         "Incredible sex appeal"
       ],
       inventory: 5,
-      cart: 0,
       selectedVariant: 0,
       variants: [
         {
@@ -101,14 +99,16 @@ Vue.component('product', {
     },
     methods: {
     addToCart() {
-      this.cart += 1;
+      this.$emit('add-to-cart', {
+        action: 'add',
+        id: this.variants[this.selectedVariant].variantId
+      })
     },
     removeFromCart() {
-      if (this.cart > 0) {
-        this.cart -= 1;
-      } else {
-        return;
-      }
+      this.$emit('remove-from-cart', {
+        action: 'remove',
+        id: this.variants[this.selectedVariant].variantId
+      })
     },
     updateProduct(index) {
       this.selectedVariant = index;
@@ -157,5 +157,23 @@ var app = new Vue({
   el: "#app",
   data: {
     premium: true,
+    cart: []
+  },
+  methods: {
+    updateCart(update) {
+      switch (update.action) {
+        case 'add':
+          this.cart.push(update.id)
+          break;
+        case 'remove':
+          let index = this.cart.indexOf(update.id)
+          if (index !== -1 && this.cart.length > 0) {
+          this.cart.splice(index, 1)
+          }
+          break;
+        default:
+          break;
+      }
+    }
   }
 });
