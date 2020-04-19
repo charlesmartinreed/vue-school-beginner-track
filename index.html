@@ -9,7 +9,13 @@
   <body>
     <div class="nav-bar"></div>
     <div id="app">
-      <product :premium="premium"></product>
+      <div class="cart">
+        <p>Cart [{{ cart.length }}]</p>
+      </div>
+
+      <!-- @add-to-cart is shorthand for v-on:add-to-cart, which is our event listener for the event emitted by the the product component when the button is clicked -->
+
+      <product :premium="premium" @add-to-cart="updateCart" @remove-from-cart="updateCart"></product>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
