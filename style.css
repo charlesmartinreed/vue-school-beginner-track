@@ -102,6 +102,7 @@ textarea {
 .activeTab {
   color: #16c0b0;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .onSale {

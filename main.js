@@ -22,9 +22,9 @@ Vue.component("product", {
     <!-- value in {{ }} expression pulled from computed proeperty - this changes when the reactive component associated with the data does -->
     <h1>{{ title }}</h1>
     <p>{{ description }}</p>
-    <product-details :details=details></product-details>
-    <p>{{ premium ? "Premium User" : "Basic User"}}</p>
-    <p>{{ shipping }}</p>
+
+    <info-tabs :shipping="shipping" :details="details"></info-tabs>
+
     <!-- conditional statements use the v-if, v-else-if, or v-else directive -->
 
     <button v-on:click="addToCart" 
@@ -41,7 +41,7 @@ Vue.component("product", {
     <a :href="link">More Info</a>
   
 
-    <div class="product-sizes" v-for="(size, index) in sizes" key="index">
+    <div class="product-sizes" v-for="(size, index) in sizes" :key="index">
       {{ size }}
     </div>
 
@@ -54,7 +54,7 @@ Vue.component("product", {
     ></div>
     </div>
 
-  <product-tabs :reviews="reviews"></product-tabs>
+  <product-tabs :reviews="reviews" :details="details"></product-tabs>
 
 </div>
   `,
@@ -155,7 +155,7 @@ Vue.component("product-details", {
   },
   template: `
   <ul>
-  <li v-for="(detail, index) in details" key="index">
+  <li v-for="(detail, index) in details" :key="index">
     {{detail}}
   </li>
 </ul>
@@ -308,6 +308,7 @@ Vue.component("product-tabs", {
     </div>
 
     <product-review v-show="selectedTab === 'Make a Review'"></product-review>
+
 </div>
 
   `,
@@ -319,13 +320,60 @@ Vue.component("product-tabs", {
   },
 });
 
+Vue.component("info-tabs", {
+  props: {
+    shipping: {
+      type: String,
+      required: true,
+    },
+    details: {
+      type: Array,
+      required: true,
+    },
+  },
+  template: `
+  <div>
+    <ul>
+      <span 
+      class="tabs"
+      :class="{ activeTab : selectedTab === tab}"
+      v-for="(tab, index) in tabs"
+      @click="selectedTab = tab"
+      :key="index"
+      >
+        {{tab}}
+      </span>
+    </ul>
+
+    <div v-show="selectedTab === 'Shipping'">
+      <strong>{{shipping}}</strong>
+    </div>
+
+    <div v-show="selectedTab === 'Details'">
+      <ul>
+        <li v-for="detail in details">
+          <strong>{{detail}}</strong>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+  `,
+  data() {
+    return {
+      tabs: ["Shipping", "Details"],
+      selectedTab: "Shipping",
+    };
+  },
+});
+
 // create a new Vue instance
 var app = new Vue({
   // initialization options go here
   // connect to the #app element on our DOM
   el: "#app",
   data: {
-    premium: true,
+    premium: false,
     cart: [],
   },
   methods: {
