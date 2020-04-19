@@ -16,8 +16,8 @@
           <img v-bind:src="image" alt="" />
         </div>
         <div class="product-info">
-          <!-- value in {{ }} expression pulled from data exposed by vue instance -->
-          <h1>Impossibly Dope {{ title }}</h1>
+          <!-- value in {{ }} expression pulled from computed proeperty - this changes when the reactive component associated with the data does -->
+          <h1>{{ title }}</h1>
           <p>{{ description }}</p>
           <!-- conditional statements use the v-if, v-else-if, or v-else directive -->
 
@@ -29,33 +29,30 @@
           <div class="cart"><p>Cart [{{cart}}]</p></div>
 
           <!-- alternatively, we can use v-show to display elements programmatically; display:none for the element when not set to render with v-show directive -->
-          <p v-if="inventory > 10">In Stock!</p>
-          <p v-else-if="inventory <= 10 && inventory > 0">
-            Low Stock - Order Soon!
-          </p>
+          <p v-if="inStock">In Stock!</p>
           <p v-else :class="{ outOfStock: !inStock }">Out of Stock</p>
-          <p class="on-sale" v-show="onSale">Now On Sale!</p>
+          <p :class="{ onSale: onSale}">{{ onSale }}</p>
           <a :href="link">More Info</a>
 
           <!-- for loops in Vue using vue-for -->
           <ul>
-            <li v-for="detail in details" key="">
+            <li v-for="(detail, index) in details" key="index">
               {{detail}}
             </li>
           </ul>
 
-          <div class="product-sizes" v-for="size in sizes" key="size">
+          <div class="product-sizes" v-for="(size, index) in sizes" key="index">
             {{ size }}
           </div>
 
           <!-- in the style directive, either camelCasing or kebob casing is valid, as long as the kebob case is in '' -->
           <!-- we can also bind to style objects or pass an array of style objects - :style="[]styleObject, styleObject2" -->
           <div
-            v-for="variant in variants"
+            v-for="(variant, index) in variants"
             :key="variant.variantId"
             class="color-box"
             :style="{ backgroundColor: variant.variantColor}"
-            @mouseover="updateProduct(variant.variantImage)"
+            @mouseover="updateProduct(index)"
           ></div>
         </div>
       </div>
