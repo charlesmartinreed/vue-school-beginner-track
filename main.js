@@ -54,6 +54,21 @@ Vue.component('product', {
     ></div>
   </div>
 
+  <div>
+    <h2>Reviews</h2>
+      <p v-if="reviews.length === 0">There are no reviews yet.</p>
+      
+      <ul>
+        <li 
+        v-for="(review, index) in reviews"
+        key="index">
+        <p>{{ review.name }}</p>
+        <p>{{ review.rating }}</p>
+        <p>{{ review.review }}</p>
+        </li>
+       </ul>
+    </div>
+
   <product-review @review-submitted="addReview"></product-review>
 </div>
   `,
@@ -161,6 +176,16 @@ Vue.component('product-details', {
 Vue.component('product-review', {
   template: `
   <form class="review-form" @submit.prevent="onSubmit">
+
+  <p v-if="errors.length">
+  <strong>Please correct the following error(s):</strong>
+    <ul>
+      <li v-for="(error, index) in errors">
+        {{error}}
+      </li>
+    </ul>
+  </p>
+
   <p>
     <label for="name">Name:</label>
     <input id="name" v-model="name" placeholder="Your name">
@@ -173,11 +198,11 @@ Vue.component('product-review', {
   <p>
     <label for="rating">Rating:</label>
     <select id="rating" v-model.number="rating">
-      <option>5</option>
-      <option>4</option>
-      <option>3</option>
-      <option>2</option>
-      <option>1</option>
+      <option value="5">5</option>
+      <option value="4">4</option>
+      <option value="3" selected>3</option>
+      <option value="2">2</option>
+      <option value="1">1</option>
     </select>
   </p>
 
@@ -191,23 +216,35 @@ Vue.component('product-review', {
     return {
       name: null,
       review: null,
-      rating: null
+      rating: null,
+      errors: []
     }
   },
   methods: {
     onSubmit() {
       let { name, review, rating } = this;
-      
-      let productReview = {
-        name, review, rating
+
+      if (name && review && rating) {
+        let productReview = {
+          name, review, rating
+        }
+  
+        this.$emit('review-submitted', productReview)
+  
+        // reset the values after submitting
+        this.name = null
+        this.review = null
+        this.rating = null
+      } else {
+        // add a new error to errors
+        if (!this.name) this.errors.push('Name required')
+        if (!this.review) this.errors.push('Review required')
+        if (!this.rating) this.errors.push('Rating required')
+
+        setTimeout(() => {
+          this.errors = []
+        }, 5000)
       }
-
-      this.$emit('review-submitted', productReview)
-
-      // reset the values after submitting
-      this.name = null
-      this.review = null
-      this.rating = null
     }
   }
 })
