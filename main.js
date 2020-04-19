@@ -1,10 +1,13 @@
+// THIS EVENT BUS WILL LBE USED TO TRANSPORT DATA BETWEEN MULTIPLE LEVELS OF COMPONENTS; PARENTS, CHILDREN, GRANDCHILDREN...
+var eventBus = new Vue();
+
 // COMPONENT BEGINS HERE
-Vue.component('product', {
+Vue.component("product", {
   props: {
     premium: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   template: `
   <div class="product">
@@ -14,6 +17,7 @@ Vue.component('product', {
     <!-- v-bind:src is equivalent to shorthand, :src -->
     <img v-bind:src="image" alt="" />
   </div>
+
   <div class="product-info">
     <!-- value in {{ }} expression pulled from computed proeperty - this changes when the reactive component associated with the data does -->
     <h1>{{ title }}</h1>
@@ -35,16 +39,12 @@ Vue.component('product', {
     <p :class="{ onSale: onSale}">{{ onSale }}</p>
     
     <a :href="link">More Info</a>
-
-    <!-- for loops in Vue using vue-for -->
   
 
     <div class="product-sizes" v-for="(size, index) in sizes" key="index">
       {{ size }}
     </div>
 
-    <!-- in the style directive, either camelCasing or kebob casing is valid, as long as the kebob case is in '' -->
-    <!-- we can also bind to style objects or pass an array of style objects - :style="[]styleObject, styleObject2" -->
     <div
       v-for="(variant, index) in variants"
       :key="variant.variantId"
@@ -52,30 +52,15 @@ Vue.component('product', {
       :style="{ backgroundColor: variant.variantColor}"
       @mouseover="updateProduct(index)"
     ></div>
-  </div>
-
-  <div>
-    <h2>Reviews</h2>
-      <p v-if="reviews.length === 0">There are no reviews yet.</p>
-      
-      <ul>
-        <li 
-        v-for="(review, index) in reviews"
-        key="index">
-        <p>{{ review.name }}</p>
-        <p>{{ review.rating }}</p>
-        <p>{{ review.review }}</p>
-        <p>Recommended?: {{ review.recommend }}</p>
-        </li>
-       </ul>
     </div>
 
-  <product-review @review-submitted="addReview"></product-review>
+  <product-tabs :reviews="reviews"></product-tabs>
+
 </div>
   `,
   data() {
     return {
-      brand: 'Millionairess',
+      brand: "Millionairess",
       product: "Socks",
       description:
         "So luxurious, so fashionable. Go ahead and buy them - it's OK to be extra.",
@@ -85,7 +70,7 @@ Vue.component('product', {
         "20% polyester",
         "Fun for all ages",
         "Gender neutral",
-        "Incredible sex appeal"
+        "Incredible sex appeal",
       ],
       inventory: 5,
       selectedVariant: 0,
@@ -95,14 +80,14 @@ Vue.component('product', {
           variantColor: "green",
           variantImage: "./assets/images/vmSocks-green-onWhite.jpg",
           variantQuantity: 10,
-          onSale: true
+          onSale: true,
         },
         {
           variantId: 2235,
           variantColor: "blue",
           variantImage: "./assets/images/vmSocks-blue-onWhite.jpg",
           variantQuantity: 0,
-          onSale: false
+          onSale: false,
         },
       ],
       sizes: [
@@ -114,32 +99,28 @@ Vue.component('product', {
         "extra extra large",
       ],
       reviews: [],
-      }
-    },
-    methods: {
+    };
+  },
+  methods: {
     addToCart() {
-      this.$emit('add-to-cart', {
-        action: 'add',
-        id: this.variants[this.selectedVariant].variantId
-      })
+      this.$emit("add-to-cart", {
+        action: "add",
+        id: this.variants[this.selectedVariant].variantId,
+      });
     },
     removeFromCart() {
-      this.$emit('remove-from-cart', {
-        action: 'remove',
-        id: this.variants[this.selectedVariant].variantId
-      })
+      this.$emit("remove-from-cart", {
+        action: "remove",
+        id: this.variants[this.selectedVariant].variantId,
+      });
     },
     updateProduct(index) {
       this.selectedVariant = index;
     },
-    addReview(productReview) {
-      this.reviews.push(productReview)
-
-    }
   },
   // results of a computed property are CACHED, which is what makes this more efficient than using a method when the operation in the computed property is expensive
   computed: {
-    title: function() {
+    title: function () {
       return `${this.brand} ${this.product}`;
     },
     image() {
@@ -149,20 +130,28 @@ Vue.component('product', {
       return this.variants[this.selectedVariant].variantQuantity > 0;
     },
     onSale() {
-      return this.variants[this.selectedVariant]. onSale ? `These incredibly dope ${this.brand} ${this.product} are currently on sale!` : null
+      return this.variants[this.selectedVariant].onSale
+        ? `These incredibly dope ${this.brand} ${this.product} are currently on sale!`
+        : null;
     },
     shipping() {
-      return this.premium ? "Free Shipping" : "$3.99 for Shipping"
-    }
+      return this.premium ? "Free Shipping" : "$3.99 for Shipping";
+    },
   },
-})
+  mounted() {
+    // lifecycle hook for code that runs when the component mounts
+    eventBus.$on("review-submitted", (productReview) => {
+      this.reviews.push(productReview);
+    });
+  },
+});
 
-Vue.component('product-details', {
+Vue.component("product-details", {
   props: {
     details: {
       type: Array,
       required: true,
-    }
+    },
   },
   template: `
   <ul>
@@ -171,10 +160,10 @@ Vue.component('product-details', {
   </li>
 </ul>
   `,
-})
+});
 
 // v-model is used for BIDIRECTIONAL DATA BINDING
-Vue.component('product-review', {
+Vue.component("product-review", {
   template: `
   <form class="review-form" @submit.prevent="onSubmit">
 
@@ -245,8 +234,8 @@ Vue.component('product-review', {
       review: null,
       rating: null,
       recommend: null,
-      errors: []
-    }
+      errors: [],
+    };
   },
   methods: {
     onSubmit() {
@@ -254,56 +243,106 @@ Vue.component('product-review', {
 
       if (name && review && rating && recommend) {
         let productReview = {
-          name, review, rating, recommend
-        }
-  
-        this.$emit('review-submitted', productReview)
-        console.log(productReview)
-  
+          name,
+          review,
+          rating,
+          recommend,
+        };
+
+        eventBus.$emit("review-submitted", productReview);
+        console.log(productReview);
+
         // reset the values after submitting
-        this.name = null
-        this.review = null
-        this.rating = null
-        this.recommend = null
+        this.name = null;
+        this.review = null;
+        this.rating = null;
+        this.recommend = null;
       } else {
         // add a new error to errors
-        if (!this.name) this.errors.push('Name required')
-        if (!this.review) this.errors.push('Review required')
-        if (!this.rating) this.errors.push('Rating required')
-        if (!this.recommend) this.errors.push('Recommendation required')
+        if (!this.name) this.errors.push("Name required");
+        if (!this.review) this.errors.push("Review required");
+        if (!this.rating) this.errors.push("Rating required");
+        if (!this.recommend) this.errors.push("Recommendation required");
 
         setTimeout(() => {
-          this.errors = []
-        }, 5000)
+          this.errors = [];
+        }, 5000);
       }
-    }
-  }
-})
+    },
+  },
+});
+
+Vue.component("product-tabs", {
+  props: {
+    reviews: {
+      type: Array,
+      required: true,
+    },
+  },
+  template: `
+    <div>
+
+      <span 
+      class="tab"
+      :class="{ activeTab: selectedTab === tab}"
+      v-for="(tab, index) in tabs"
+      :key="index"
+      @click="selectedTab = tab"
+      >
+      {{ tab }}
+      </span>
+
+    <div v-show="selectedTab === 'Reviews'">
+    <p v-if="reviews.length === 0">There are no reviews yet.</p>
+    
+    <ul v-else>
+      <li 
+      v-for="(review, index) in reviews"
+      :key="index">
+      <p>{{ review.name }}</p>
+      <p>{{ review.rating }}</p>
+      <p>{{ review.review }}</p>
+      <p>Recommended?: {{ review.recommend }}</p>
+      </li>
+     </ul>
+    </div>
+
+    <product-review v-show="selectedTab === 'Make a Review'"></product-review>
+</div>
+
+  `,
+  data() {
+    return {
+      tabs: ["Reviews", "Make a Review"],
+      selectedTab: "Reviews",
+    };
+  },
+});
 
 // create a new Vue instance
 var app = new Vue({
   // initialization options go here
-   // connect to the #app element on our DOM
+  // connect to the #app element on our DOM
   el: "#app",
   data: {
     premium: true,
-    cart: []
+    cart: [],
   },
   methods: {
     updateCart(update) {
       switch (update.action) {
-        case 'add':
-          this.cart.push(update.id)
+        case "add":
+          this.cart.push(update.id);
           break;
-        case 'remove':
-          let index = this.cart.indexOf(update.id)
+        case "remove":
+          let index = this.cart.indexOf(update.id);
           if (index !== -1 && this.cart.length > 0) {
-          this.cart.splice(index, 1)
+            this.cart.splice(index, 1);
           }
           break;
         default:
           break;
       }
     },
-  }
+  },
 });
